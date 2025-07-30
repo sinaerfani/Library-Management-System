@@ -34,7 +34,7 @@ public class BookController {
     public void deleteBook(@RequestParam int id){
         bookService.deleteBook(id);
     }
-    @GetMapping("/update")
+    @PostMapping("/update")
     public void updateBook(@RequestParam int id,@RequestBody @Valid BookSaveDto bookSaveDto){
         bookService.update(id,bookSaveDto);
     }
