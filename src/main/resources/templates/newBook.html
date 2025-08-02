@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>افزودن کتاب جدید</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5" style="max-width: 600px;">
+    <div class="card shadow">
+        <div class="card-body">
+            <h2 class="card-title text-primary mb-4 text-center">➕ افزودن کتاب جدید</h2>
+
+            <form id="bookForm">
+                <div class="mb-3">
+                    <label class="form-label">نام کتاب</label>
+                    <input type="text" class="form-control" id="name" placeholder="مثال: شازده کوچولو">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">نویسنده</label>
+                    <input type="text" class="form-control" id="author" placeholder="مثال: آنتوان دو سنت اگزوپری">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">تعداد</label>
+                    <input type="number" class="form-control" id="count" placeholder="مثال: 3">
+                </div>
+
+                <div id="message"></div>
+
+                <div class="d-flex justify-content-between">
+                    <a href="/" class="btn btn-secondary">🏠 بازگشت</a>
+                    <button type="submit" class="btn btn-success">ثبت کتاب</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('bookForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const data = {
+            name: document.getElementById('name').value.trim(),
+            author: document.getElementById('author').value.trim(),
+            count: parseInt(document.getElementById('count').value)
+        };
+
+        const msgDiv = document.getElementById('message');
+        msgDiv.innerHTML = "";
+
+        fetch('/books/save', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        })
+            .then(async response => {
+                const json = await response.json();
+
+
+                if (response.ok && json.id) {
+                    msgDiv.innerHTML = `<div class="alert alert-success mt-3">کتاب با موفقیت اضافه شد! انتقال به لیست کتاب‌ها...</div>`;
+                    setTimeout(() => location.replace("/booksList"), 1000);
+                } else {
+
+                    let errors = Array.isArray(json) ? json : [json];
+                    msgDiv.innerHTML = `<div class="alert alert-danger mt-3"><ul class="mb-0">` +
+                        errors.map(e => `<li>${e.message}</li>`).join('') +
+                        `</ul></div>`;
+                }
+            })
+            .catch(err => {
+                msgDiv.innerHTML = `<div class="alert alert-danger mt-3">❌ خطای ارتباط با سرور</div>`;
+            });
+    });
+</script>
+
+</body>
+</html>

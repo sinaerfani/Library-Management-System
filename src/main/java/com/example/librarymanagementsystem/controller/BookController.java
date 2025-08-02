@@ -6,6 +6,7 @@ import com.example.librarymanagementsystem.service.BookService;
 import com.example.librarymanagementsystem.service.BookServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +19,8 @@ public class BookController {
     private BookServiceImpl bookService;
 
     @PostMapping("/save")
-    public ResponseEntity<Book> saveBook(@RequestBody @Valid BookSaveDto bookSaveDto){
-        Book book=new Book();
+    public ResponseEntity<Book> saveBook(@RequestBody @Valid BookSaveDto bookSaveDto) {
+        Book book = new Book();
         book.setName(bookSaveDto.getName());
         book.setAuthor(bookSaveDto.getAuthor());
         book.setCount(bookSaveDto.getCount());
