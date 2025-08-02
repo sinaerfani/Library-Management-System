@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class BookController {
     private BookServiceImpl bookService;
 
     @PostMapping("/save")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Book> saveBook(@RequestBody @Valid BookSaveDto bookSaveDto) {
         Book book = new Book();
         book.setName(bookSaveDto.getName());
@@ -32,14 +34,26 @@ public class BookController {
        return bookService.getAllBooks();
     }
     @GetMapping("/delete")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public void deleteBook(@RequestParam int id){
         bookService.deleteBook(id);
     }
     @PostMapping("/update")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public void updateBook(@RequestParam int id,@RequestBody @Valid BookSaveDto bookSaveDto){
         bookService.update(id,bookSaveDto);
     }
+    @GetMapping("/admin")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public String admin() {
+        return "admin";
+    }
 
+    @GetMapping("/user")
+    @PreAuthorize("hasAnyRole('USER')")
+    public String user() {
+        return "user";
+    }
 
 }
 
